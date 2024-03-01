@@ -1,8 +1,8 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" script_class="LevelTable" load_steps=3 format=3 uid="uid://cxc521o8m5i8j"]
 
-[ext_resource path="res://example/script/leveltable.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource type="Script" path="res://example/script/leveltable.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://dmcisrlnfjp87" path="res://icon.png" id="2"]
 
 [resource]
-script = ExtResource( 1 )
-table_data = [ [ 1, 15.2223, 0, ExtResource( 2 ) ], [ 2, 45.1, 10, ExtResource( 2 ) ], [ 3, 77.867, 20, null ], [ 4, 100.0, 40, null ] ]
+script = ExtResource("1")
+table_data = [[1, 15.2223, 0, ExtResource("2")], [2, 45.1, 10, ExtResource("2")], [3, 77.867, 20, null], [4, 100.0, 40, null]]

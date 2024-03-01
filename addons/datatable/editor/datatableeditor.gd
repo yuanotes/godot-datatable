@@ -11,7 +11,7 @@ func _init(schema: Array, plugin: EditorPlugin):
 	self.table_schema = schema
 	_setup_table_layout()
 
-func update_property():
+func _update_property():
 	_clear_table_cells()
 	_populate_table()
 
@@ -29,15 +29,16 @@ func _setup_table_layout():
 	
 	var add_btn := Button.new()
 	add_btn.icon = _get_icon_by_name("Add")
-	add_btn.connect("pressed", self, "_on_add_pressed")
+	add_btn.connect("pressed", Callable(self, "_on_add_pressed"))
 	header_hbox.add_child(add_btn)
 	
 	table_grid = GridContainer.new()
 	table_grid.size_flags_horizontal |= SIZE_EXPAND
 	table_root.add_child(table_grid)
+	
 
 func _populate_table():
-	var table_data = get_edited_object().get(get_edited_property())
+	var table_data = get_edited_object()[get_edited_property()]
 	row_count_lbl.text = "Rows: %d" % [table_data.size()]
 	
 	table_grid.columns = table_schema.size() + 1
@@ -65,7 +66,7 @@ func _populate_table_row(row: Array, row_idx: int):
 	# add delete button as last column
 	var delete_btn := Button.new()
 	delete_btn.icon = _get_icon_by_name("Remove")
-	delete_btn.connect("pressed", self, "_on_delete_row_pressed", [row_idx])
+	delete_btn.connect("pressed", Callable(self, "_on_delete_row_pressed").bind(row_idx))
 	table_grid.add_child(delete_btn)
 
 # Ensure that existing table rows conform to the schema (in case it changes)
@@ -96,9 +97,9 @@ func _get_control_for_data_type(type, row, column_idx) -> Control:
 	match type.id():
 		TYPE_BOOL:
 			control = CheckBox.new()
-			control.pressed = row[column_idx]
+			control.button_pressed = row[column_idx]
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
-			control.connect("toggled", self, "_on_value_changed", [row, column_idx])
+			control.connect("toggled", Callable(self, "_on_value_changed").bind(row, column_idx))
 		TYPE_INT:
 			control = SpinBox.new()
 			control.step = 1
@@ -106,26 +107,26 @@ func _get_control_for_data_type(type, row, column_idx) -> Control:
 			control.max_value = type.max_value
 			control.value = row[column_idx]
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
-			control.connect("value_changed", self, "_on_value_changed_int", [row, column_idx])
-		TYPE_REAL:
+			control.connect("value_changed", Callable(self, "_on_value_changed_int").bind(row, column_idx))
+		TYPE_FLOAT:
 			control = SpinBox.new()
 			control.step = 0.0001
 			control.value = row[column_idx]
 			control.min_value = type.min_value
 			control.max_value = type.max_value
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
-			control.connect("value_changed", self, "_on_value_changed_float", [row, column_idx])
+			control.connect("value_changed", Callable(self, "_on_value_changed_float").bind(row, column_idx))
 		TYPE_STRING:
 			control = LineEdit.new()
 			control.text = row[column_idx]
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
-			control.connect("text_changed", self, "_on_value_changed", [row, column_idx])
+			control.connect("text_changed", Callable(self, "_on_value_changed").bind(row, column_idx))
 		TYPE_OBJECT:
 			control = EditorResourcePicker.new()
 			control.edited_resource = row[column_idx]
 			control.base_type = type.allowed_types
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
-			control.connect("resource_changed", self, "_on_value_changed", [row, column_idx])
+			control.connect("resource_changed", Callable(self, "_on_value_changed").bind(row, column_idx))
 		_:
 			control = Label.new()
 			control.text = "unknown type"
@@ -159,4 +160,5 @@ func _on_value_changed_float(value, row, column_idx):
 
 func _get_icon_by_name(name: String):
 	var gui := plugin.get_editor_interface().get_base_control()
-	return gui.get_icon(name, "EditorIcons")
+	#return gui.get_icon(name, "EditorIcons")
+	return EditorInterface.get_editor_theme().get_icon(name, "EditorIcons")

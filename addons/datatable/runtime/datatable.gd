@@ -1,4 +1,4 @@
-tool
+@tool
 extends Resource
 class_name DataTable
 
@@ -9,7 +9,7 @@ const MAX_FLOAT: float = 1.79769e308
 
 # Table is stored as array-of-arrays
 # Outer array contains rows, each row is array of column data
-export var table_data: Array
+@export var table_data: Array
 
 # Tables should override this to return an array of SchemaColumn
 func _get_schema() -> Array:
@@ -91,7 +91,7 @@ class TypeFloat:
 		self.max_value = max_value
 	
 	func id() -> int:
-		return TYPE_REAL
+		return TYPE_FLOAT
 
 class TypeString:
 	extends SchemaType
