@@ -1,5 +1,5 @@
 # godot-datatable
-Implementation of DataTable-style resources for Godot (written against 3.5.1)
+Implementation of DataTable-style resources for Godot (test with 4.2.1)
 
 ## Usage
 
