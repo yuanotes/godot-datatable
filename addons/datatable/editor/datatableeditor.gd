@@ -143,7 +143,7 @@ func _on_add_pressed():
 
 func _on_delete_row_pressed(rowidx):
 	var table_data = get_edited_object().get(get_edited_property())
-	table_data.remove(rowidx)
+	table_data.remove_at(rowidx)
 	emit_changed(get_edited_property(), table_data)
 
 func _on_value_changed(value, row, column_idx):
