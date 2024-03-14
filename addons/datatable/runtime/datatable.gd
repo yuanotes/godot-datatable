@@ -2,10 +2,10 @@
 extends Resource
 class_name DataTable
 
-const MIN_INT: int = -9223372036854775807
-const MAX_INT: int = 9223372036854775807
-const MIN_FLOAT: float = -1.79769e308
-const MAX_FLOAT: float = 1.79769e308
+const MIN_INT: int = 0
+const MAX_INT: int = 100
+const MIN_FLOAT: float = 0
+const MAX_FLOAT: float = 100
 
 # Table is stored as array-of-arrays
 # Outer array contains rows, each row is array of column data
