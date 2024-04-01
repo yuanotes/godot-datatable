@@ -195,7 +195,7 @@ class DataTableQuery:
 	
 	# Fetch the value of column by results index & column name
 	func get_column_value(result_index: int, column_name: String):
-		assert(result_index > 0 and result_index < _results.size(), "Result index out of range")
+		assert(result_index >= 0 and result_index < _results.size(), "Result index out of range")
 		var columnidx = _table.get_column_index(column_name)
 		assert(columnidx != -1, "Column name not found in table schema")
 		return _results[result_index][columnidx]
