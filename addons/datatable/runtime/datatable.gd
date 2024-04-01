@@ -25,6 +25,12 @@ func get_row_by_index(index: int) -> Array:
 	return table_data[index]
 	
 # Get index of column matching given name
+func get_column_name(column_index: int) -> String:
+	var schema_columns = _get_schema()
+	assert(column_index >= 0 and column_index < schema_columns.size(), "Column name not found in table schema")
+	return schema_columns[column_index].name
+
+# Get index of column matching given name
 func get_column_index(column_name: String) -> int:
 	var schema = _get_schema()
 	for columnidx in range(0, schema.size()):
