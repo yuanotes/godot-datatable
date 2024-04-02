@@ -16,9 +16,13 @@ func _update_property():
 	_populate_table()
 
 func _setup_table_layout():
+	var scroll_container := ScrollContainer.new()
+	scroll_container.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll_container)
+	set_bottom_editor(scroll_container)
+
 	var table_root := VBoxContainer.new()
-	add_child(table_root)
-	set_bottom_editor(table_root)
+	scroll_container.add_child(table_root)
 	
 	var header_hbox := HBoxContainer.new()
 	table_root.add_child(header_hbox)
@@ -36,7 +40,6 @@ func _setup_table_layout():
 	table_grid.size_flags_horizontal |= SIZE_EXPAND
 	table_root.add_child(table_grid)
 	
-
 func _populate_table():
 	var table_data = get_edited_object()[get_edited_property()]
 	row_count_lbl.text = "Rows: %d" % [table_data.size()]
