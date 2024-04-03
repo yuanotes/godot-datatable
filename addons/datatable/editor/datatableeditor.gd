@@ -124,6 +124,34 @@ func _get_control_for_data_type(type, row, column_idx) -> Control:
 			control.text = row[column_idx]
 			control.size_flags_horizontal |= Control.SIZE_EXPAND
 			control.connect("text_changed", Callable(self, "_on_value_changed").bind(row, column_idx))
+		TYPE_ARRAY:
+			control = VBoxContainer.new()
+			var initial_line = HBoxContainer.new();
+			var initial_add_btn = Button.new()
+			initial_add_btn.icon = _get_icon_by_name("Add")
+			initial_add_btn.connect("pressed", Callable(self, "_on_array_add_value").bind(row, column_idx, control))
+			initial_line.add_child(initial_add_btn)
+			control.add_child(initial_line)
+
+			for array_idx in range(0, row[column_idx].size()):
+				var line = HBoxContainer.new();
+				var text = LineEdit.new()
+				text.text = row[column_idx][array_idx]
+				text.connect("text_changed", Callable(self, "_on_array_value_changed").bind(row, column_idx, array_idx))
+				line.add_child(text)
+
+				var delete_btn = Button.new()
+				delete_btn.icon = _get_icon_by_name("Remove")
+				delete_btn.connect("pressed", Callable(self, "_on_array_delete_value").bind(row, column_idx, array_idx, line, control))
+				line.add_child(delete_btn)
+				
+				var add_btn = Button.new()
+				add_btn.icon = _get_icon_by_name("Add")
+				add_btn.connect("pressed", Callable(self, "_on_array_add_value").bind(row, column_idx, control))
+				line.add_child(add_btn)
+
+				control.add_child(line)
+			control.size_flags_horizontal |= Control.SIZE_EXPAND
 		TYPE_OBJECT:
 			control = EditorResourcePicker.new()
 			control.edited_resource = row[column_idx]
@@ -148,6 +176,41 @@ func _on_delete_row_pressed(rowidx):
 	var table_data = get_edited_object().get(get_edited_property())
 	table_data.remove_at(rowidx)
 	emit_changed(get_edited_property(), table_data)
+
+func _on_array_value_changed(value, row, column_idx, array_idx):
+	row[column_idx][array_idx] = value
+	var table_data = get_edited_object().get(get_edited_property())
+	emit_changed(get_edited_property(), table_data, "", true)
+
+func _on_array_delete_value(row, column_idx, array_idx, line, control):
+	row[column_idx].remove_at(array_idx)
+	var table_data = get_edited_object().get(get_edited_property())
+	emit_changed(get_edited_property(), table_data, "", true)
+	control.remove_child(line)
+
+func _on_array_add_value(row, column_idx, control):
+	var array_idx = row[column_idx].size()
+	row[column_idx].push_back("")
+	var table_data = get_edited_object().get(get_edited_property())
+	emit_changed(get_edited_property(), table_data, "", true)
+	
+	var new_line = HBoxContainer.new();
+	var text = LineEdit.new()
+	text.text = ""
+	text.connect("text_changed", Callable(self, "_on_array_value_changed").bind(row, column_idx, array_idx))
+	new_line.add_child(text)
+
+	var delete_btn = Button.new()
+	delete_btn.icon = _get_icon_by_name("Remove")
+	delete_btn.connect("pressed", Callable(self, "_on_array_delete_value").bind(row, column_idx, array_idx, new_line, control))
+	new_line.add_child(delete_btn)
+	
+	var add_btn = Button.new()
+	add_btn.icon = _get_icon_by_name("Add")
+	add_btn.connect("pressed", Callable(self, "_on_array_add_value").bind(row, column_idx, control))
+	new_line.add_child(add_btn)
+
+	control.add_child(new_line)
 
 func _on_value_changed(value, row, column_idx):
 	row[column_idx] = value

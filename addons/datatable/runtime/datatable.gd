@@ -105,6 +105,12 @@ class TypeString:
 	func id() -> int:
 		return TYPE_STRING
 
+class TypeArray:
+	extends SchemaType
+	
+	func id() -> int:
+		return TYPE_ARRAY
+
 class TypeObject:
 	extends SchemaType
 	
