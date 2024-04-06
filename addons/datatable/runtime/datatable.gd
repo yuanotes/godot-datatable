@@ -132,6 +132,17 @@ class DataTableQuery:
 		self._table = table
 		self._results = results
 	
+	func filter(column_name: String, fn: Callable) -> DataTableQuery:
+		var filterResults := []
+		var columnidx = _table.get_column_index(column_name)
+		assert(columnidx != -1, "Column name not found in table schema")
+		
+		for row in _results:
+			if fn.call(row[columnidx]):
+				filterResults.append(row)
+				
+		return DataTableQuery.new(_table, filterResults)
+
 	func equal(column_name: String, column_value) -> DataTableQuery:
 		var filterResults := []
 		var columnidx = _table.get_column_index(column_name)
